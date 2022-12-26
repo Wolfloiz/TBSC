@@ -10,8 +10,6 @@ public class MouseWorld : MonoBehaviour
   private void Awake()
   {
     instance = this;
-
-
   }
   // Update is called once per frame
   void Update()
@@ -25,6 +23,5 @@ public class MouseWorld : MonoBehaviour
     Physics.Raycast(ray, out RaycastHit raycastHit, float.MaxValue, instance.mousePlaneLayerMask);
 
     return raycastHit.point;
-
   }
 }
