@@ -7,10 +7,23 @@ public class Unit : MonoBehaviour
   [SerializeField] private Animator unitAnimator;
 
   private Vector3 targetPosition;
+  private GridPosition gridPosition;
+
+  private void Awake()
+  {
+    targetPosition = transform.position;
+  }
+
+
+  private void Start()
+  {
+    gridPosition = LevelGrid.Instance.GetGridPosition(transform.position);
+    LevelGrid.Instance.AddUnitAtGridPosition(gridPosition, this);
+  }
 
   private void Update()
   {
-    unitAnimator.SetBool("isWalking", false);
+
     float stoppinDistance = .1f;
     if (Vector3.Distance(transform.position, targetPosition) > stoppinDistance)
     {
@@ -22,6 +35,17 @@ public class Unit : MonoBehaviour
       transform.forward = Vector3.Lerp(transform.forward, moveDirection, Time.deltaTime * rotateSpeed);
 
       unitAnimator.SetBool("isWalking", true);
+    }
+    else
+    {
+      unitAnimator.SetBool("isWalking", false);
+    }
+
+    GridPosition newGridPosition = LevelGrid.Instance.GetGridPosition(transform.position);
+    if (newGridPosition != gridPosition)
+    {
+      LevelGrid.Instance.UnitMovedGridPosition(this, gridPosition, newGridPosition);
+      gridPosition = newGridPosition;
     }
 
   }
