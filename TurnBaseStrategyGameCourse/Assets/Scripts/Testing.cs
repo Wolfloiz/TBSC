@@ -5,7 +5,7 @@ using UnityEngine;
 public class Testing : MonoBehaviour
 {
 
-  // Start is called before the first frame update
+  [SerializeField] private Unit unit;
   void Start()
   {
 
@@ -14,6 +14,9 @@ public class Testing : MonoBehaviour
   // Update is called once per frame
   void Update()
   {
-
+    if (Input.GetKeyDown(KeyCode.T))
+    {
+      unit.GetMoveAction().GetValidActionGridPositionList();
+    }
   }
 }
