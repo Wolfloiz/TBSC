@@ -8,12 +8,14 @@ public class Unit : MonoBehaviour
 
   private MoveAction moveAction;
   private SpinAction spinAction;
+  private BaseAction[] baseActionArray;
 
 
   private void Awake()
   {
     spinAction = GetComponent<SpinAction>();
     moveAction = GetComponent<MoveAction>();
+    baseActionArray = GetComponents<BaseAction>();
   }
   private void Start()
   {
@@ -48,6 +50,11 @@ public class Unit : MonoBehaviour
   public SpinAction GetSpinAction()
   {
     return spinAction;
+  }
+
+  public BaseAction[] GetBaseActionArray()
+  {
+    return baseActionArray;
   }
 
 
