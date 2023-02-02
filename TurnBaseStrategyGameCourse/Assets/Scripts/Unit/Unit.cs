@@ -9,7 +9,7 @@ public class Unit : MonoBehaviour
   private MoveAction moveAction;
   private SpinAction spinAction;
   private BaseAction[] baseActionArray;
-
+  private int actionPoints = 2;
 
   private void Awake()
   {

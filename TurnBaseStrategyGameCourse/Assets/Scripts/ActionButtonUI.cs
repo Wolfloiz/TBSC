@@ -30,7 +30,4 @@ public class ActionButtonUI : MonoBehaviour
     selectedGameObject.SetActive(selectedBaseAction == baseAction);
   }
 
-
-
-
 }
