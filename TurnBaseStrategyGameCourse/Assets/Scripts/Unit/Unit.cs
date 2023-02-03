@@ -57,5 +57,37 @@ public class Unit : MonoBehaviour
     return baseActionArray;
   }
 
+  public bool TrySpendActionPointsToTakeAction(BaseAction baseAction)
+  {
+    if (CanSpendActionsPointsToTakeAction(baseAction))
+    {
+      SpendActionPoints(baseAction.GetActionPointsCost());
+      return true;
+    }
+    else
+      return false;
+  }
+
+  public bool CanSpendActionsPointsToTakeAction(BaseAction baseAction)
+  {
+
+    if (actionPoints >= baseAction.GetActionPointsCost())
+    {
+      return true;
+    }
+    else
+      return false;
+  }
+
+  private void SpendActionPoints(int amount)
+  {
+    actionPoints -= amount;
+  }
+
+  public int GetActionPoints()
+  {
+    return actionPoints;
+  }
+
 
 }
