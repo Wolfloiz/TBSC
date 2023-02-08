@@ -40,11 +40,17 @@ public class UnitActionSystem : MonoBehaviour
       return;
     }
 
+    if (!TurnSystem.Instance.IsPLayerTurn())
+    {
+      return;
+    }
+
     //Preciso entender melhor esse EventSystem IsPointerOverGameObject
     if (EventSystem.current.IsPointerOverGameObject())
     {
       return;
     }
+
     if (TryHandleUnitSelection())
     {
       return;
@@ -99,6 +105,10 @@ public class UnitActionSystem : MonoBehaviour
         if (raycastHit.transform.TryGetComponent<Unit>(out Unit unit))
         {
           if (unit == selectedUnit)
+          {
+            return false;
+          }
+          if (unit.IsEnemy())
           {
             return false;
           }
