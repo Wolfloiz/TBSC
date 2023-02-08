@@ -8,6 +8,8 @@ public class ShootAction : BaseAction
 
   private float totalSpinAmount;
 
+  private int maxShootDistance = 7;
+
   private void Update()
   {
 
@@ -33,12 +35,41 @@ public class ShootAction : BaseAction
 
   public override List<GridPosition> GetValidActionGridPositionList()
   {
-    GridPosition unitGridPosition = unit.GetGridPosition();
+    List<GridPosition> validGridPositionList = new List<GridPosition>();
 
-    return new List<GridPosition>
+    GridPosition unitGridPosition = unit.GetGridPosition()
+    ;
+
+    for (int x = -maxShootDistance; x <= maxShootDistance; x++)
     {
-      unitGridPosition
-    };
+      for (int z = -maxShootDistance; z <= maxShootDistance; z++)
+      {
+        GridPosition offsetGridPosition = new GridPosition(x, z);
+        GridPosition testGridPosition = unitGridPosition + offsetGridPosition;
+
+        if (!LevelGrid.Instance.IsValidGridPosition(testGridPosition))
+        {
+          continue;
+        }
+
+        if (!LevelGrid.Instance.HasAnyUnitOnGridPosition(testGridPosition))
+        {
+          continue;
+        }
+
+        Unit targetUnit = LevelGrid.Instance.GetUnitAtGridPosition(testGridPosition);
+
+        if (targetUnit.IsEnemy() == unit.IsEnemy())
+        {
+          continue;
+        }
+
+        validGridPositionList.Add(testGridPosition);
+
+      }
+    }
+
+    return validGridPositionList;
   }
 
   public override void TakeAction(GridPosition gridPosition, Action onActionComplete)
