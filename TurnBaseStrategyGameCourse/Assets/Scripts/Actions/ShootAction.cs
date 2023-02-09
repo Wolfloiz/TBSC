@@ -6,27 +6,85 @@ using UnityEngine;
 public class ShootAction : BaseAction
 {
 
-  private float totalSpinAmount;
+  public event EventHandler OnShoot;
 
+  private enum State
+  {
+    Aiming,
+    Shooting,
+    CoolOff,
+  }
+
+  private State state;
   private int maxShootDistance = 7;
-
+  private float stateTimer;
+  private Unit targetUnit;
+  private bool canShootBullet;
   private void Update()
   {
-
     if (!isActive)
     {
       return;
     }
-    float spinAddAmount = 360f * Time.deltaTime;
-    transform.eulerAngles += new Vector3(0, spinAddAmount, 0);
 
-    totalSpinAmount += spinAddAmount;
+    stateTimer -= Time.deltaTime;
 
-    if (totalSpinAmount >= 360)
+    switch (state)
     {
-      isActive = false;
-      onActionComplete();
+      case State.Aiming:
+        Vector3 aimDir = (targetUnit.GetWorldPosition() - unit.GetWorldPosition()).normalized;
+        float rotateSpeed = 10f;
+        transform.forward = Vector3.Lerp(transform.forward, aimDir, Time.deltaTime * rotateSpeed);
+        break;
+
+      case State.Shooting:
+        if (canShootBullet)
+        {
+          Shoot();
+          canShootBullet = false;
+        }
+
+        break;
+
+      case State.CoolOff:
+
+        break;
     }
+
+    if (stateTimer <= 0f)
+    {
+      NextState();
+    }
+  }
+
+
+
+  private void NextState()
+  {
+    switch (state)
+    {
+      case State.Aiming:
+        state = State.Shooting;
+        float aimingStateTime = 0.1f;
+        stateTimer = aimingStateTime;
+        break;
+
+      case State.Shooting:
+        state = State.CoolOff;
+        float shootingStateTime = 0.1f;
+        stateTimer = shootingStateTime;
+        break;
+
+      case State.CoolOff:
+        ActionComplete();
+        break;
+    }
+  }
+
+  private void Shoot()
+  {
+    OnShoot?.Invoke(this, EventArgs.Empty);
+    targetUnit.Damage();
   }
   public override string GetActionName()
   {
@@ -52,6 +110,12 @@ public class ShootAction : BaseAction
           continue;
         }
 
+        int textDistance = Mathf.Abs(x) + Mathf.Abs(z);
+
+        if (textDistance > maxShootDistance)
+          continue;
+
+
         if (!LevelGrid.Instance.HasAnyUnitOnGridPosition(testGridPosition))
         {
           continue;
@@ -74,8 +138,14 @@ public class ShootAction : BaseAction
 
   public override void TakeAction(GridPosition gridPosition, Action onActionComplete)
   {
-    this.onActionComplete = onActionComplete;
-    isActive = true;
-    totalSpinAmount = 0f;
+    ActionStart(onActionComplete);
+
+    targetUnit = LevelGrid.Instance.GetUnitAtGridPosition(gridPosition);
+
+    state = State.Aiming;
+    float aimingStateTime = 1f;
+    stateTimer = aimingStateTime;
+
+    canShootBullet = true;
   }
 }
