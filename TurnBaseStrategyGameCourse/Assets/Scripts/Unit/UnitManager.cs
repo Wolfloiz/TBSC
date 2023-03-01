@@ -28,7 +28,7 @@ public class UnitManager : MonoBehaviour
   private void Start()
   {
     Unit.OnAnyUnitSpawned += Unit_OnAnyUnitSpawned;
-    Unit.OnAnyunitDead += Unit_OnAnyUnitDead;
+    Unit.OnAnyUnitDead += Unit_OnAnyUnitDead;
   }
 
   private void Unit_OnAnyUnitSpawned(object sender, EventArgs e)

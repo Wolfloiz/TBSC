@@ -11,7 +11,7 @@ public class Unit : MonoBehaviour
 
   public static event EventHandler OnAnyUnitSpawned;
 
-  public static event EventHandler OnAnyunitDead;
+  public static event EventHandler OnAnyUnitDead;
 
 
   [SerializeField] private bool isEnemy;
@@ -20,6 +20,8 @@ public class Unit : MonoBehaviour
 
   private MoveAction moveAction;
   private SpinAction spinAction;
+
+  private ShootAction shootAction;
   private BaseAction[] baseActionArray;
   private int actionPoints = ACTIONS_POINTS_MAX;
 
@@ -28,6 +30,7 @@ public class Unit : MonoBehaviour
     spinAction = GetComponent<SpinAction>();
     healthSystem = GetComponent<HealthSystem>();
     moveAction = GetComponent<MoveAction>();
+    shootAction = GetComponent<ShootAction>();
     baseActionArray = GetComponents<BaseAction>();
   }
   private void Start()
@@ -117,6 +120,11 @@ public class Unit : MonoBehaviour
     return actionPoints;
   }
 
+  public ShootAction GetShootAction()
+  {
+    return shootAction;
+  }
+
   private void TurnSystem_OnTurnChanged(object sender, EventArgs e)
   {
     if ((IsEnemy() && !TurnSystem.Instance.IsPLayerTurn()) ||
@@ -145,6 +153,11 @@ public class Unit : MonoBehaviour
     LevelGrid.Instance.RemoveUnitAtGridPosition(gridPosition, this);
     Destroy(gameObject);
 
-    OnAnyunitDead?.Invoke(this, EventArgs.Empty);
+    OnAnyUnitDead?.Invoke(this, EventArgs.Empty);
+  }
+
+  public float GetHealthNormalized()
+  {
+    return healthSystem.GetHealthNormalized();
   }
 }
