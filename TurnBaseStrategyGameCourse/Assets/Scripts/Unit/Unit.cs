@@ -17,21 +17,14 @@ public class Unit : MonoBehaviour
   [SerializeField] private bool isEnemy;
   private GridPosition gridPosition;
   private HealthSystem healthSystem;
-
-  private MoveAction moveAction;
-  private SpinAction spinAction;
-
-  private ShootAction shootAction;
   private BaseAction[] baseActionArray;
   private int actionPoints = ACTIONS_POINTS_MAX;
 
   private void Awake()
   {
-    spinAction = GetComponent<SpinAction>();
     healthSystem = GetComponent<HealthSystem>();
-    moveAction = GetComponent<MoveAction>();
-    shootAction = GetComponent<ShootAction>();
     baseActionArray = GetComponents<BaseAction>();
+
   }
   private void Start()
   {
@@ -61,9 +54,16 @@ public class Unit : MonoBehaviour
 
   }
 
-  public MoveAction GetMoveAction()
+  public T GetAction<T>() where T : BaseAction
   {
-    return moveAction;
+    foreach (BaseAction baseAction in baseActionArray)
+    {
+      if (baseAction is T)
+      {
+        return (T)baseAction;
+      }
+    }
+    return null;
   }
 
   public GridPosition GetGridPosition()
@@ -76,10 +76,6 @@ public class Unit : MonoBehaviour
     return transform.position;
   }
 
-  public SpinAction GetSpinAction()
-  {
-    return spinAction;
-  }
 
   public BaseAction[] GetBaseActionArray()
   {
@@ -120,10 +116,6 @@ public class Unit : MonoBehaviour
     return actionPoints;
   }
 
-  public ShootAction GetShootAction()
-  {
-    return shootAction;
-  }
 
   private void TurnSystem_OnTurnChanged(object sender, EventArgs e)
   {
