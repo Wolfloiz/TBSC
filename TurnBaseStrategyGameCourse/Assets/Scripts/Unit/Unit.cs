@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class Unit : MonoBehaviour
 {
-  private const int ACTIONS_POINTS_MAX = 2;
+  private const int ACTIONS_POINTS_MAX = 9;
 
   public static event EventHandler OnAnyActionPointsChanged;
 

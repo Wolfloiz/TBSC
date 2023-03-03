@@ -8,6 +8,8 @@ public class ShootAction : BaseAction
 
   public event EventHandler<OnShootEventArgs> OnShoot;
 
+  [SerializeField] LayerMask obstacleLayerMask;
+
   public class OnShootEventArgs : EventArgs
   {
     public Unit targetUnit;
@@ -140,6 +142,18 @@ public class ShootAction : BaseAction
 
         if (targetUnit.IsEnemy() == unit.IsEnemy())
         {
+          continue;
+        }
+
+        Vector3 unitWorldPosition = LevelGrid.Instance.GetWorldPosition(unitGridPosition);
+        Vector3 shootDir = (targetUnit.GetWorldPosition() - unitWorldPosition).normalized;
+        float unitShoulderHeight = 1.7f;
+        if (Physics.Raycast(unitWorldPosition + Vector3.up * unitShoulderHeight,
+         shootDir,
+         Vector3.Distance(unitWorldPosition, targetUnit.GetWorldPosition()),
+         obstacleLayerMask))
+        {
+          // Blocked by an obstacle
           continue;
         }
 
