@@ -6,6 +6,7 @@ using UnityEngine;
 public class ShootAction : BaseAction
 {
 
+  public static event EventHandler<OnShootEventArgs> OnAnyShoot;
   public event EventHandler<OnShootEventArgs> OnShoot;
 
   [SerializeField] LayerMask obstacleLayerMask;
@@ -90,6 +91,13 @@ public class ShootAction : BaseAction
 
   private void Shoot()
   {
+    OnAnyShoot?.Invoke(this, new OnShootEventArgs
+    {
+      targetUnit = targetUnit,
+      shootingUnit = unit
+
+    });
+
     OnShoot?.Invoke(this, new OnShootEventArgs
     {
       targetUnit = targetUnit,
@@ -98,6 +106,7 @@ public class ShootAction : BaseAction
     });
     targetUnit.Damage(50);
   }
+
   public override string GetActionName()
   {
     return "Shoot";
@@ -112,8 +121,6 @@ public class ShootAction : BaseAction
   public List<GridPosition> GetValidActionGridPositionList(GridPosition unitGridPosition)
   {
     List<GridPosition> validGridPositionList = new List<GridPosition>();
-
-
 
     for (int x = -maxShootDistance; x <= maxShootDistance; x++)
     {
